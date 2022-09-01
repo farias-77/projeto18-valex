@@ -12,8 +12,8 @@ server.use(cors());
 server.use(json());
 dotenv.config();
 
-server.use(router);
 server.use(errorHandler);
+server.use(router);
 
 
 const PORT = process.env.PORT || 5009

@@ -68,7 +68,6 @@ function returnExpirationDate(){
 export async function generateCard(employeeId: number, cardType: any){
     const cryptr = new Cryptr('secret');
 
-
     const employee: any = await employeeRepositories.findById(employeeId);
     
     const cardholderName: string = returnCardName(employee.fullName);
@@ -83,9 +82,9 @@ export async function generateCard(employeeId: number, cardType: any){
         cardholderName,
         securityCode: encryptedCvc,
         expirationDate,
-        password: null,
+        password: undefined,
         isVirtual: false,
-        originalCardId: null,
+        originalCardId: undefined,
         isBlocked: false,
         type: cardType
     }
