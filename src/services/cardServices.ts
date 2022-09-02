@@ -1,9 +1,13 @@
 import * as employeeRepositories from "../repositories/employeeRepository";
+import * as rechargeRepositories from "../repositories/rechargeRepository";
 import * as companyRepositories from "../repositories/companyRepository";
+import * as paymentRepositories from "../repositories/paymentRepository";
 import * as cardRepositories from "../repositories/cardRepository";
+
 import { faker } from '@faker-js/faker';
 import dayjs from "dayjs";
 import Cryptr from "cryptr";
+
 
 export function validateCardType(cardType: string){
     const types: string[] = [
@@ -155,12 +159,17 @@ export async function insertPassword(cardId: number, password: string){
     return;
 }
 
-// export async function returnCardBalance(cardId: number){
-//     const card = await returnCardById(cardId);
-
-//     Continuar aqui
-
-// }
+export async function returnCardBalance(cardId: number){
+    const cardPayments = await returnCardPayments(cardId);
+    const cardRecharges = await returnCardRecharges(cardId);
+    
+    const balance = calculateBalance(cardRecharges, cardPayments);
+    return {
+        balance,
+        transactions: cardPayments,
+        recharges: cardRecharges
+    }
+}
 
 
 function returnCardName(fullName: string): string{
@@ -202,4 +211,21 @@ async function returnCardByTypeAndEmployeeId(employeeId: number, cardType: any){
 
 async function returnCardById(cardId: number){
     return await cardRepositories.findById(cardId);
+}
+
+async function returnCardPayments(cardId: number){
+    return await paymentRepositories.findByCardId(cardId);
+}
+
+async function returnCardRecharges(cardId: number){
+    return await rechargeRepositories.findByCardId(cardId);
+}
+
+function calculateBalance(recharges: any, payments: any){
+    let balance = 0;
+
+    recharges.forEach((recharge: any) => balance += recharge.amount);
+    payments.forEach((payment: any) => balance -= payment.amount);
+
+    return balance;
 }

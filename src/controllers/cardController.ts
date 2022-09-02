@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as cardServices from "../services/cardServices";
 
+
 export async function createCard(req: Request, res: Response, next: NextFunction){
     try{
         const cardType = req.body.cardType;
@@ -41,7 +42,7 @@ export async function activateCard(req: Request, res: Response, next: NextFuncti
 export async function checkCardBalance(req : Request, res: Response){
     const cardId: number = Number(req.params.cardId);
 
-    //const cardBalance = await cardServices.returnCardBalance(cardId);
+    const cardBalance = await cardServices.returnCardBalance(cardId);
 
-    //return cardBalance;
+    return cardBalance;
 }
