@@ -25,12 +25,12 @@ export async function activateCard(req: Request, res: Response, next: NextFuncti
         const cardId: number = Number(req.params.cardId);
         const cvc: string = req.body.cvc;
         const password: string = req.body.password;
-
-        //cardServices.validateRegisteredCard(cardId);
-        //cardServices.validateExpirationDate(cardId);
-        //cardServices.validateActivated(cardId);
-        //cardServices.validateCvc(cardId, cvc);
-        //cardServices.insertPassword(cardId, password);
+        
+        await cardServices.validateRegisteredCard(cardId);
+        await cardServices.validateExpirationDate(cardId);
+        await cardServices.validateActivated(cardId);
+        await cardServices.validateCvc(cardId, cvc);
+        await cardServices.insertPassword(cardId, password);
 
         return res.status(200).send("Cartão ativado.");
     }catch(error){
