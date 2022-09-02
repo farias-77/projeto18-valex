@@ -3,8 +3,8 @@ import "express-async-errors";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import errorHandler from "./middlewares/errorHandler";
 import router from "./routers/routersIndex";
+import errorHandlingMiddleware from "./middlewares/errorHandler";
 
 const server = express();
 
@@ -12,9 +12,8 @@ server.use(cors());
 server.use(json());
 dotenv.config();
 
-server.use(errorHandler);
 server.use(router);
-
+server.use(errorHandlingMiddleware);
 
 const PORT = process.env.PORT || 5009
 

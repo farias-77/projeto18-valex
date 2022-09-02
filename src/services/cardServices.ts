@@ -90,6 +90,74 @@ export async function generateCard(employeeId: number, cardType: any){
     return;
 }
 
+export async function validateRegisteredCard(cardId: number){
+    const card = await returnCardById(cardId);
+
+    if(!card){
+        throw {code: "InvalidCardId", message: "Não encontramos nenhum cartão com o id informado!"};
+    }
+
+    return;
+}
+
+export async function validateExpirationDate(cardId: number){
+    const card = await returnCardById(cardId);
+    const today = dayjs(new Date()).format("MM/YY");
+
+    if(today > card.expirationDate){
+        throw {code: "ExpiredCard", message: "Você não pode ativar um cartão expirado!"};
+    }
+
+    return;
+}
+
+export async function validateActivated(cardId: number){
+    const card = await returnCardById(cardId);
+
+    if(card.password){
+        throw {code: "ActivatedCard", message: "Você não pode ativar um cartão que já está ativado!"};
+    }
+
+    return;
+}   
+
+export async function validateCvc(cardId: number, cvc: string){
+    const cryptr = new Cryptr('secret');
+    
+    const card = await returnCardById(cardId);
+    const decryptedCvc = cryptr.decrypt(card.securityCode);
+
+    if(cvc !== decryptedCvc){
+        throw {code: "InvalidCvc", message: "CVC inválido."};
+    }
+
+    return;
+}
+
+export async function insertPassword(cardId: number, password: string){
+    const numericPassword: number = Number(password);
+
+    if(isNaN(numericPassword)){
+        throw {code: "NanPassword", message: "A senha deve ser composta por 4 números!"};
+    }
+
+    const card = await returnCardById(cardId);
+    
+    const cryptr = new Cryptr('secret');
+    const encryptedPassword = cryptr.encrypt(numericPassword.toString());
+
+    const cardData = {
+        ...card,
+        password: encryptedPassword,
+    }
+
+    await cardRepositories.update(cardId, cardData);
+    return;
+}
+
+
+
+
 function returnCardName(fullName: string): string{
     const employeeNameArray = fullName.split(" ");
     const cardNameArray = employeeNameArray.map( (name, index) => {
@@ -125,4 +193,8 @@ async function returnCompanyByApiKey(apiKey: string){
 
 async function returnCardByTypeAndEmployeeId(employeeId: number, cardType: any){
     return await cardRepositories.findByTypeAndEmployeeId(cardType, employeeId);
+}
+
+async function returnCardById(cardId: number){
+    return await cardRepositories.findById(cardId);
 }
