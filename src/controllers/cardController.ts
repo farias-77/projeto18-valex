@@ -3,7 +3,6 @@ import * as cardServices from "../services/cardServices";
 
 
 export async function createCard(req: Request, res: Response, next: NextFunction){
-    try{
         const cardType = req.body.cardType;
         const employeeId = Number(req.body.employeeId);
         const apiKey: any = req.headers.apikey;
@@ -16,13 +15,9 @@ export async function createCard(req: Request, res: Response, next: NextFunction
         await cardServices.generateCard(employeeId, cardType)
 
         return res.status(200).send("Cartão registrado.");
-    }catch(error){
-        next(error);
-    }
 }
 
 export async function activateCard(req: Request, res: Response, next: NextFunction){
-    try{
         const cardId: number = Number(req.params.cardId);
         const cvc: string = req.body.cvc;
         const password: string = req.body.password;
@@ -34,9 +29,6 @@ export async function activateCard(req: Request, res: Response, next: NextFuncti
         await cardServices.insertPassword(cardId, password);
 
         return res.status(200).send("Cartão ativado.");
-    }catch(error){
-        next(error);
-    }
 }
 
 export async function checkCardBalance(req : Request, res: Response){
@@ -47,3 +39,5 @@ export async function checkCardBalance(req : Request, res: Response){
 
     return res.status(200).send(cardBalance);
 }
+
+// export async function blockCard(req, res)

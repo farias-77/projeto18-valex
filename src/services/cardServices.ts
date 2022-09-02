@@ -172,6 +172,7 @@ export async function returnCardBalance(cardId: number){
 }
 
 
+
 function returnCardName(fullName: string): string{
     const employeeNameArray = fullName.split(" ");
     const cardNameArray = employeeNameArray.map( (name, index) => {
