@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker';
 import dayjs from "dayjs";
 import Cryptr from "cryptr";
 
-export async function validateCardType(cardType: string){
+export function validateCardType(cardType: string){
     const types: string[] = [
         "groceries",
         "restaurant",
@@ -23,7 +23,7 @@ export async function validateCardType(cardType: string){
 
 export async function validateEmployee(employeeId: number){
     const employee = await returnEmployeeById(employeeId);
-
+    
     if(!employee){
         throw {code: "InvalidEmployeeId", message: "Não existe um funcionário com esse Id!"};
     }
@@ -155,7 +155,12 @@ export async function insertPassword(cardId: number, password: string){
     return;
 }
 
+// export async function returnCardBalance(cardId: number){
+//     const card = await returnCardById(cardId);
 
+//     Continuar aqui
+
+// }
 
 
 function returnCardName(fullName: string): string{
