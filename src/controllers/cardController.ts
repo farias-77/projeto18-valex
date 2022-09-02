@@ -42,7 +42,8 @@ export async function activateCard(req: Request, res: Response, next: NextFuncti
 export async function checkCardBalance(req : Request, res: Response){
     const cardId: number = Number(req.params.cardId);
 
+    await cardServices.validateRegisteredCard(cardId);
     const cardBalance = await cardServices.returnCardBalance(cardId);
 
-    return cardBalance;
+    return res.status(200).send(cardBalance);
 }
