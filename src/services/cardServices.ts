@@ -21,48 +21,45 @@ export async function validateCardType(cardType: string){
     return;
 }
 
-export async function validateEmployeeCompanyRelation(employeeId: number, apiKey: string){
-    const employee = await employeeRepositories.findById(employeeId);
-    const company = await companyRepositories.findByApiKey(apiKey);
+export async function validateEmployee(employeeId: number){
+    const employee = await returnEmployeeById(employeeId);
 
+    if(!employee){
+        throw {code: "InvalidEmployeeId", message: "Não existe um funcionário com esse Id!"};
+    }
+
+    return;
+}
+
+export async function validateCompany(apiKey: string){
+    const company = await returnCompanyByApiKey(apiKey);
+
+    if(!company){
+        throw {code: "InvalidApiKey", message: "ApiKey inválida!"};
+    }
+
+    return;
+}
+
+export async function validateEmployeeCompanyRelation(employeeId: number, apiKey: string){
+    const employee = await returnEmployeeById(employeeId);
+    const company = await returnCompanyByApiKey(apiKey);
+    
     if(employee.companyId !== company.id){
-        throw {code: "InvalidCompanyForEmployee", message: "Um funcionário só pode receber um cartão da sua própria empresa!"};
+        throw {code: "InvalidCompanyEmployeeRelation", message: "Um funcionário só pode receber um cartão da sua própria empresa!"};
     }
 
     return;
 }
 
 export async function validateEmployeeCardTypeRelation(employeeId: number, cardType: any){
-    const card = await cardRepositories.findByTypeAndEmployeeId(cardType, employeeId);
+    const card = await returnCardByTypeAndEmployeeId(employeeId, cardType);
 
     if(card){
         throw {code: "EmployeeAlreadyHasThisType", message: "Um funcionário só pode receber um cartão de cada tipo!"};
     }
-}
 
-function returnCardName(fullName: string): string{
-    const employeeNameArray = fullName.split(" ");
-    const cardNameArray = employeeNameArray.map( (name, index) => {
-        if(index === 0 || index === employeeNameArray.length-1){
-            return name;
-        }
-
-       if(name.length >= 3){
-           return name[0];
-       }
-
-       return false;
-    });
-
-    const cardName = cardNameArray.filter(name => name).join(" ").toUpperCase();
-    return cardName;
-}
-
-function returnExpirationDate(){
-    const now = new Date();
-    const FiveYAhead = new Date().setFullYear(now.getFullYear() + 5);
-
-    return dayjs(FiveYAhead).format('MM/YY');
+    return;
 }
 
 export async function generateCard(employeeId: number, cardType: any){
@@ -91,4 +88,41 @@ export async function generateCard(employeeId: number, cardType: any){
 
     await cardRepositories.insert(cardData);
     return;
+}
+
+function returnCardName(fullName: string): string{
+    const employeeNameArray = fullName.split(" ");
+    const cardNameArray = employeeNameArray.map( (name, index) => {
+        if(index === 0 || index === employeeNameArray.length-1){
+            return name;
+        }
+
+       if(name.length >= 3){
+           return name[0];
+       }
+
+       return false;
+    });
+
+    const cardName = cardNameArray.filter(name => name).join(" ").toUpperCase();
+    return cardName;
+}
+
+function returnExpirationDate(){
+    const now = new Date();
+    const FiveYAhead = new Date().setFullYear(now.getFullYear() + 5);
+
+    return dayjs(FiveYAhead).format('MM/YY');
+}
+
+async function returnEmployeeById(employeeId: number){
+    return await employeeRepositories.findById(employeeId);
+}
+
+async function returnCompanyByApiKey(apiKey: string){
+    return await companyRepositories.findByApiKey(apiKey);
+}
+
+async function returnCardByTypeAndEmployeeId(employeeId: number, cardType: any){
+    return await cardRepositories.findByTypeAndEmployeeId(cardType, employeeId);
 }
