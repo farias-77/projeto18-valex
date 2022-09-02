@@ -115,7 +115,7 @@ export async function validateExpirationDate(cardId: number){
     return;
 }
 
-export async function validateActivated(cardId: number){
+export async function validateActivatedCard(cardId: number){
     const card = await returnCardById(cardId);
 
     if(card.password){
@@ -171,6 +171,28 @@ export async function returnCardBalance(cardId: number){
     }
 }
 
+export async function validateBlockedCard(cardId: number){
+    const card = await returnCardById(cardId);
+
+    if(card.isBlocked){
+        throw {code: "BlockedCard", message: "Você não pode bloquear um cartão que já está bloqueado!"};
+    }
+
+    return;
+}
+
+export async function validateCardPassword(cardId: number, passwordSent: string){
+    const cryptr = new Cryptr('secret');
+    
+    const card = await returnCardById(cardId);
+    const decryptedPassword:string = cryptr.decrypt(card.password || "");
+
+    if(passwordSent !== decryptedPassword){
+        throw {code: "IncorrectPassword", message: "Senha incorreta."};
+    }
+
+    return;
+}
 
 
 function returnCardName(fullName: string): string{
