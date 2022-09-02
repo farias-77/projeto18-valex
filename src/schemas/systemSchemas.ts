@@ -9,3 +9,7 @@ export const activateCardSchema = joi.object({
     cvc: joi.string().required(),
     password: joi.string().length(4)
 });
+
+export const blockCardSchema = joi.object({
+    password: joi.string()
+});

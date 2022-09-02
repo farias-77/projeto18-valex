@@ -115,11 +115,15 @@ export async function validateExpirationDate(cardId: number){
     return;
 }
 
-export async function validateActivatedCard(cardId: number){
+export async function validateActivatedCard(cardId: number, isBlockRoute: boolean){
     const card = await returnCardById(cardId);
 
-    if(card.password){
+    if(card.password && !isBlockRoute){
         throw {code: "ActivatedCard", message: "Você não pode ativar um cartão que já está ativado!"};
+    }
+
+    if(!card.password && isBlockRoute){
+        throw {code: "ActivatedCard", message: "Você não pode bloquear um cartão que não está ativado!"};
     }
 
     return;
@@ -155,7 +159,7 @@ export async function insertPassword(cardId: number, password: string){
         password: encryptedPassword,
     }
 
-    await cardRepositories.update(cardId, cardData);
+    await updateCard(cardId, cardData);
     return;
 }
 
@@ -194,6 +198,17 @@ export async function validateCardPassword(cardId: number, passwordSent: string)
     return;
 }
 
+export async function blockCard(cardId: number){
+    const card = await returnCardById(cardId);
+
+    const cardData = {
+        ...card,
+        isBlocked: true
+    };
+
+    await updateCard(cardId, cardData);
+    return;
+}
 
 function returnCardName(fullName: string): string{
     const employeeNameArray = fullName.split(" ");
@@ -251,4 +266,8 @@ function calculateBalance(recharges: any, payments: any){
     payments.forEach((payment: any) => balance -= payment.amount);
 
     return balance;
+}
+
+async function updateCard(cardId: number, cardData: any){
+    return await cardRepositories.update(cardId, cardData);
 }

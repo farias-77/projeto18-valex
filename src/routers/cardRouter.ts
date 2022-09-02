@@ -8,6 +8,6 @@ const cardRouter = Router();
 cardRouter.post("/create-card", schemaValidation(schemas.createCardSchema), createCard);
 cardRouter.put("/activate-card/:cardId", schemaValidation(schemas.activateCardSchema), activateCard);
 cardRouter.get("/card-balance/:cardId", checkCardBalance);
-cardRouter.put("/block-card/:cardId", blockCard);
+cardRouter.put("/block-card/:cardId", schemaValidation(schemas.blockCardSchema), blockCard);
 
 export default cardRouter;
