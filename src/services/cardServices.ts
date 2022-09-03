@@ -109,21 +109,25 @@ export async function validateExpirationDate(cardId: number){
     const today = dayjs(new Date()).format("MM/YY");
 
     if(today > card.expirationDate){
-        throw {code: "ExpiredCard", message: "Você não pode ativar um cartão expirado!"};
+        throw {code: "ExpiredCard", message: "Cartão expirado!"};
     }
 
     return;
 }
 
-export async function validateActivatedCard(cardId: number, isBlockRoute: boolean){
+export async function validateActivatedCard(cardId: number, route: string){
     const card = await returnCardById(cardId);
 
-    if(card.password && !isBlockRoute){
+    if(card.password && route === "activateCard"){
         throw {code: "ActivatedCard", message: "Você não pode ativar um cartão que já está ativado!"};
     }
 
-    if(!card.password && isBlockRoute){
+    if(!card.password && route === "blockCard"){
         throw {code: "ActivatedCard", message: "Você não pode bloquear um cartão que não está ativado!"};
+    }
+
+    if(!card.password && route === "rechargeCard"){
+        throw {code: "ActivatedCard", message: "Você não pode recarregar um cartão que não está ativado!"};
     }
 
     return;

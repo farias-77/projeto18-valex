@@ -13,3 +13,7 @@ export const activateCardSchema = joi.object({
 export const passwordSchema = joi.object({
     password: joi.string()
 });
+
+export const rechargeSchema = joi.object({
+    amount: joi.number().greater(0)
+});
