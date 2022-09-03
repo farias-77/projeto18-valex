@@ -91,7 +91,7 @@ export async function generateCard(employeeId: number, cardType: any){
     }
 
     await cardRepositories.insert(cardData);
-    return;
+    return cvc;
 }
 
 export async function validateRegisteredCard(cardId: number){

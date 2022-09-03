@@ -12,9 +12,9 @@ export async function createCard(req: Request, res: Response){
         await cardServices.validateCompany(apiKey);
         await cardServices.validateEmployeeCompanyRelation(employeeId, apiKey);
         await cardServices.validateEmployeeCardTypeRelation(employeeId, cardType);
-        await cardServices.generateCard(employeeId, cardType)
+        const cvc = await cardServices.generateCard(employeeId, cardType)
 
-        return res.status(200).send("Cartão registrado.");
+        return res.status(200).send({cvc});
 }
 
 export async function activateCard(req: Request, res: Response){
