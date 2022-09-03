@@ -27,6 +27,7 @@ export default function errorHandlingMiddleware(error: any, req: Request, res: R
 
 	if (error.code === "InvalidCompanyEmployeeRelation") return res.status(401).send(error.message);
 	
-
+	if (error.code === "InvalidCardCompanyRelation") return res.status(401).send(error.message);
+	
 	return res.sendStatus(500);
 }
