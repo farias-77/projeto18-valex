@@ -46,10 +46,23 @@ export async function blockCard(req : Request, res: Response){
 
     await cardServices.validateRegisteredCard(cardId); 
     await cardServices.validateExpirationDate(cardId);
-    //await cardServices.validateBlockedCard(cardId); //testar depois do primeiro bloqueio
+    await cardServices.validateBlockedCard(cardId, true);
     await cardServices.validateActivatedCard(cardId, true);
     await cardServices.validateCardPassword(cardId, password);
-    await cardServices.blockCard(cardId);
+    await cardServices.changeBlockedStatus(cardId, true);
 
     return res.status(200).send("Cartão bloqueado");
+}
+
+export async function unlockCard(req : Request, res: Response){
+    const cardId: number = Number(req.params.cardId);
+    const password: string = req.body.password;
+
+    await cardServices.validateRegisteredCard(cardId);
+    await cardServices.validateExpirationDate(cardId);
+    await cardServices.validateBlockedCard(cardId, false);
+    await cardServices.validateCardPassword(cardId, password);
+    await cardServices.changeBlockedStatus(cardId, false);
+
+    return res.status(200).send("Cartão desbloqueado.");
 }

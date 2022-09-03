@@ -15,6 +15,8 @@ export default function errorHandlingMiddleware(error: any, req: Request, res: R
 
 	if (error.code === "ActivatedCard") return res.status(401).send(error.message);
 
+	if (error.code === "NonBlockedCard") return res.status(401).send(error.message);
+	
 	if (error.code === "InvalidCardType") return res.status(400).send(error.message);
 
 	if (error.code === "IncorrectPassword") return res.status(401).send(error.message);
@@ -25,6 +27,6 @@ export default function errorHandlingMiddleware(error: any, req: Request, res: R
 
 	if (error.code === "InvalidCompanyEmployeeRelation") return res.status(401).send(error.message);
 	
-	
+
 	return res.sendStatus(500);
 }

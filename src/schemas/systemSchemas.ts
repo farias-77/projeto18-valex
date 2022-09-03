@@ -10,6 +10,6 @@ export const activateCardSchema = joi.object({
     password: joi.string().length(4)
 });
 
-export const blockCardSchema = joi.object({
+export const passwordSchema = joi.object({
     password: joi.string()
 });

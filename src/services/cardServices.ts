@@ -71,7 +71,7 @@ export async function generateCard(employeeId: number, cardType: any){
 
     const employee: any = await employeeRepositories.findById(employeeId);
     
-    const cardholderName: string = returnCardName(employee.fullName);
+    const cardholderName: string = returnCardHolderName(employee.fullName);
     const expirationDate: string = returnExpirationDate().toString();
     const cardNumber: string = faker.finance.creditCardNumber();
     const cvc: string = faker.finance.creditCardCVV();
@@ -175,11 +175,15 @@ export async function returnCardBalance(cardId: number){
     }
 }
 
-export async function validateBlockedCard(cardId: number){
+export async function validateBlockedCard(cardId: number, isBlockRoute: boolean){
     const card = await returnCardById(cardId);
 
-    if(card.isBlocked){
+    if(card.isBlocked && isBlockRoute){
         throw {code: "BlockedCard", message: "Você não pode bloquear um cartão que já está bloqueado!"};
+    }
+
+    if(!card.isBlocked && !isBlockRoute){
+        throw {code: "NonBlockedCard", message: "Você não pode desbloquear um cartão que não está bloqueado!"};
     }
 
     return;
@@ -198,19 +202,19 @@ export async function validateCardPassword(cardId: number, passwordSent: string)
     return;
 }
 
-export async function blockCard(cardId: number){
+export async function changeBlockedStatus(cardId: number, blockStatus: boolean){
     const card = await returnCardById(cardId);
 
     const cardData = {
         ...card,
-        isBlocked: true
+        isBlocked: blockStatus
     };
 
     await updateCard(cardId, cardData);
     return;
 }
 
-function returnCardName(fullName: string): string{
+function returnCardHolderName(fullName: string): string{
     const employeeNameArray = fullName.split(" ");
     const cardNameArray = employeeNameArray.map( (name, index) => {
         if(index === 0 || index === employeeNameArray.length-1){
