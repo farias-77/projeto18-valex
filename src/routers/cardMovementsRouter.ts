@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { schemaValidation } from "../middlewares/schemaValidation";
 import { postRecharge, postPayment } from "../controllers/cardMovementsController";
+import { schemaValidation } from "../middlewares/schemaValidation";
 import * as schemas from "../schemas/systemSchemas";
+import { Router } from "express";
 
 const cardMovementsRouter = Router();
 

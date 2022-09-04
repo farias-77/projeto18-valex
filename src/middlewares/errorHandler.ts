@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 export default function errorHandlingMiddleware(error: any, req: Request, res: Response, next: NextFunction) {
+	
 	if (error.code === "NoFunds") return res.status(401).send(error.message);	
 
 	if (error.code === "InvalidCvc") return res.status(400).send(error.message);

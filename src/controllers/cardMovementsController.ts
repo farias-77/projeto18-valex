@@ -1,6 +1,6 @@
+import * as cardMovementsServices from "../services/cardMovementsServices";
 import { Request, Response, NextFunction } from "express";
 import * as cardServices from "../services/cardServices";
-import * as cardMovementsServices from "../services/cardMovementsServices";
 
 export async function postRecharge(req: Request, res: Response){
     const cardId: number = Number(req.params.cardId);

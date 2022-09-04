@@ -5,8 +5,8 @@ import * as paymentRepositories from "../repositories/paymentRepository";
 import * as cardRepositories from "../repositories/cardRepository";
 
 import { faker } from '@faker-js/faker';
-import dayjs from "dayjs";
 import Cryptr from "cryptr";
+import dayjs from "dayjs";
 
 
 export function validateCardType(cardType: string){
