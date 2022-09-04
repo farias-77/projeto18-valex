@@ -46,7 +46,7 @@ export async function blockCard(req : Request, res: Response){
 
     await cardServices.validateRegisteredCard(cardId); 
     await cardServices.validateExpirationDate(cardId);
-    await cardServices.validateBlockedCard(cardId, true);
+    await cardServices.validateBlockedCard(cardId, "blockCard");
     await cardServices.validateActivatedCard(cardId, "blockCard");
     await cardServices.validateCardPassword(cardId, password);
     await cardServices.changeBlockedStatus(cardId, true);
@@ -60,7 +60,7 @@ export async function unlockCard(req : Request, res: Response){
 
     await cardServices.validateRegisteredCard(cardId);
     await cardServices.validateExpirationDate(cardId);
-    await cardServices.validateBlockedCard(cardId, false);
+    await cardServices.validateBlockedCard(cardId, "unlockCard");
     await cardServices.validateCardPassword(cardId, password);
     await cardServices.changeBlockedStatus(cardId, false);
 

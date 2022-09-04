@@ -16,3 +16,19 @@ export async function postRecharge(req: Request, res: Response){
 
     return res.status(200).send(`Recarga de ${amount} reais concluída com sucesso.`);
 }
+
+export async function postPayment(req: Request, res: Response){
+    const cardId: number = Number(req.params.cardId);
+    const amount: number = Number(req.body.amount);
+    const businessId: number = Number(req.body.businessId);
+    const password: string = req.body.password;
+
+    await cardServices.validateRegisteredCard(cardId);
+    await cardServices.validateActivatedCard(cardId, "paymentCard");
+    await cardServices.validateExpirationDate(cardId);
+    await cardServices.validateBlockedCard(cardId, "postPayment");
+    await cardServices.validateCardPassword(cardId, password);
+    await cardMovementsServices.validateBusiness(businessId, cardId);
+    await cardMovementsServices.validatePaymentAmount(cardId, amount);
+    await cardMovementsServices.computePayment(cardId, amount, businessId);
+}

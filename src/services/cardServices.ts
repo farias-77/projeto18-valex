@@ -130,6 +130,10 @@ export async function validateActivatedCard(cardId: number, route: string){
         throw {code: "ActivatedCard", message: "Você não pode recarregar um cartão que não está ativado!"};
     }
 
+    if(!card.password && route === "paymentCard"){
+        throw {code: "ActivatedCard", message: "Você não pode fazer compras com um cartão que não está ativado!"};
+    }
+
     return;
 }   
 
@@ -179,15 +183,19 @@ export async function returnCardBalance(cardId: number){
     }
 }
 
-export async function validateBlockedCard(cardId: number, isBlockRoute: boolean){
+export async function validateBlockedCard(cardId: number, route: string){
     const card = await returnCardById(cardId);
 
-    if(card.isBlocked && isBlockRoute){
+    if(card.isBlocked && route === "blockCard"){
         throw {code: "BlockedCard", message: "Você não pode bloquear um cartão que já está bloqueado!"};
     }
 
-    if(!card.isBlocked && !isBlockRoute){
+    if(!card.isBlocked && route === "unlockCard"){
         throw {code: "NonBlockedCard", message: "Você não pode desbloquear um cartão que não está bloqueado!"};
+    }
+
+    if(card.isBlocked && route === "postPayment"){
+        throw {code: "BlockedCard", message: "Você não pode comprar com um cartão bloqueado!"};
     }
 
     return;
