@@ -31,4 +31,6 @@ export async function postPayment(req: Request, res: Response){
     await cardMovementsServices.validateBusiness(businessId, cardId);
     await cardMovementsServices.validatePaymentAmount(cardId, amount);
     await cardMovementsServices.computePayment(cardId, amount, businessId);
+    
+    return res.send(`Compra de ${amount} reais concluída com sucesso.`);
 }

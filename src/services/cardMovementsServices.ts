@@ -45,7 +45,7 @@ export async function validatePaymentAmount(cardId: number, amount: number){
     const cardBalance = await cardServices.returnCardBalance(cardId);
 
     if(cardBalance.balance < amount){
-        throw {code: "NoFund", message: "Você não possui saldo suficiente para essa compra!"};
+        throw {code: "NoFunds", message: "Você não possui saldo suficiente para essa compra!"};
     }
 
     return;
